@@ -17,7 +17,7 @@ function App() {
           </NavItem>
           <NavItem>
             <Link to="/data-grid" className="nav-link">
-              DataGridTest
+              Airplanes
             </Link>
           </NavItem>
           {/* Add more buttons for other components */}
