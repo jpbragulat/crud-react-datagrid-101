@@ -13,11 +13,11 @@ import AlertTitle from '@mui/material/AlertTitle';
 
 
 
-const DataGridTest= () => {
+const CrudPilots= () => {
     const [tableData, setTableData] = useState([])
 
     useEffect(() => {
-        fetch("http://localhost:5233/api/GetAllPlanes")
+        fetch("http://localhost:5233/api/GetAllPilots")
           .then((data) => data.json())
           .then((data) => setTableData(data))
       }, [])
@@ -27,8 +27,8 @@ const DataGridTest= () => {
     const handleDelete = async (id) => {
      
           try { // no ser burro y usar siempre el try y catch en las funciones para error handling
-            await axios.delete(`http://localhost:5233/api/DeletePlane/${id}`); // va entre esas comillas sino no agarra id como parametro pasado
-            fetch('http://localhost:5233/api/GetAllPlanes')
+            await axios.delete(`http://localhost:5233/api/DeletePilot/${id}`); // va entre esas comillas sino no agarra id como parametro pasado
+            fetch('http://localhost:5233/api/GetAllPilots')
             .then((data) => data.json())
             .then((data) => setTableData(data));
             setAlert({ type: 'success', message: 'Row deleted successfully.' });
@@ -54,19 +54,20 @@ const DataGridTest= () => {
         }
 
     }
-    //handleSave
+    ///////////////////// HANDLE SAVE - mofif for Pilots ///////////////////////////
+
     const handleSave = async (row) => {
       try {
         if(row.isNewRow){
-          const { plane_id, isNewRow, ...dataWithoutId } = row;
-          await axios.post( "http://localhost:5233/api/AddPlane", dataWithoutId); // le saque el id porq al bckend no le cabe, igual deberia hacerlo alla tb esto.
+          const { PlaneId, isNewRow, ...dataWithoutId } = row; // le saca el campo ID y lo envia para agregar en la DB
+          await axios.post( "http://localhost:5233/api/AddPilot", dataWithoutId); // le saque el id porq al bckend no le cabe, igual deberia hacerlo alla tb esto.
           setAlert({ type: 'success', message: 'Row added successfully.' });
         }else {
-          await axios.put("http://localhost:5233/api/UpdatePlane", row); 
+          await axios.put("http://localhost:5233/api/UpdatePilot", row); 
           setAlert({ type: 'success', message: 'Row edited successfully.' });
         }
         // Si todo sale ok me traigo la tabla denuevo - Medio cabeza...
-        fetch('http://localhost:5233/api/GetAllPlanes')
+        fetch('http://localhost:5233/api/GetAllPilots')
           .then((data) => data.json())
           .then((data) => setTableData(data));
       } catch (error) {
@@ -74,24 +75,27 @@ const DataGridTest= () => {
       }
     };
     
-    //handleAdd
+    /////////////////// HANDLE ADD - modif for Pilots  ///////////////////////////////
+
     const handleAdd = () => {
-      //const newId = Math.max(...tableData.map((row) => row.plane_id)) + 1;
+      //const newId = Math.max(...tableData.map((row) => row.plane_id)) + 1; // lo sacamos con el pela porq no tenia sentido
       const newId = 0;
-      const newRow = { plane_id: newId, identifier: '', manufacturer: '', model: '', flight_hours: '', flight_hours_remain: '', isNewRow: true }; //con flag en true para saber q es nueva
+      const newRow = { PlaneId: newId, FirstName: '', LastName: '', FlightHours: '', PilotLicenseId: '', isNewRow: true }; //con flag en true para saber q es nueva
       setTableData((prevData) => [...prevData, newRow]);
       setAlert({ type: 'info', message: 'New row added. Edit and click Save.' });
     };
 
+
+    ////////////////// DEFINICION CAMPOS DEL DATA GRID  //////////////////////////////
+
     const columns = [
-      { field: 'plane_id', headerName: 'ID', width: 150, hide:true },
-      { field: 'identifier', headerName: 'IDENT', width: 150, editable:true },
-      { field: 'manufacturer', headerName: 'MANUFACTURER', width: 150, editable:true},
-      { field: 'model', headerName: 'MODEL', width: 150, editable:true},
-      { field: 'flight_hours', headerName: 'FL HOURS', width: 150, editable:true },
-      { field: 'flight_hours_remain', headerName: 'FL HOURS REMAIN', width: 150, editable:true },
+      { field: 'pilotId', headerName: 'ID', width: 150, hide:true },
+      { field: 'firstName', headerName: 'FIRST NAME', width: 150, editable:true },
+      { field: 'lastName', headerName: 'LAST NAME', width: 150, editable:true},
+      { field: 'flightHours', headerName: 'FL HOURS', width: 150, editable:true},
+      { field: 'pilotLicenseId', headerName: 'LICENSE', width: 150, editable:true },
       { field: 'deleteButton', headerName: 'DELETE', width: 150, 
-        renderCell: (params) => (<DeleteIcon onClick={() => handleDelete(params.row.plane_id)}>Delete</DeleteIcon>),
+        renderCell: (params) => (<DeleteIcon onClick={() => handleDelete(params.row.planeId)}>Delete</DeleteIcon>),
       
       },
       {
@@ -105,12 +109,17 @@ const DataGridTest= () => {
       
     ];
 
+
+    //////////////////////// ALERTAS  /////////////////////////////
+
     const [alert, setAlert] = useState({ type: '', message: '' });
 
     // Function to close the alert
     const closeAlert = () => {
       setAlert({ type: '', message: '' });
       };
+
+  //////////////////////// RETURN  //////////////////////////////////    
 
   return (
     <div style={{ height: 700, width: '100%' }}>
@@ -122,7 +131,7 @@ const DataGridTest= () => {
       <DataGrid
         rows={tableData}
         columns={columns}
-        getRowId={(row) => row.plane_id} //porq sino tengo el campo "id" solo tengo que decirle cual es, en este cado plane_id
+        getRowId={(row) => row.pilotId} //porq sino tengo el campo "id" solo tengo que decirle cual es, en este cado plane_id
         pageSize={12}
       />
       {alert.message && (
@@ -137,4 +146,4 @@ const DataGridTest= () => {
   )
 }
 
-export default DataGridTest
+export default CrudPilots
