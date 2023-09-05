@@ -59,7 +59,7 @@ const CrudPilots= () => {
     const handleSave = async (row) => {
       try {
         if(row.isNewRow){
-          const { PlaneId, isNewRow, ...dataWithoutId } = row; // le saca el campo ID y lo envia para agregar en la DB
+          const { pilotId, isNewRow, ...dataWithoutId } = row; // le saca el campo ID y lo envia para agregar en la DB
           await axios.post( "http://localhost:5233/api/AddPilot", dataWithoutId); // le saque el id porq al bckend no le cabe, igual deberia hacerlo alla tb esto.
           setAlert({ type: 'success', message: 'Row added successfully.' });
         }else {
@@ -80,7 +80,7 @@ const CrudPilots= () => {
     const handleAdd = () => {
       //const newId = Math.max(...tableData.map((row) => row.plane_id)) + 1; // lo sacamos con el pela porq no tenia sentido
       const newId = 0;
-      const newRow = { PlaneId: newId, FirstName: '', LastName: '', FlightHours: '', PilotLicenseId: '', isNewRow: true }; //con flag en true para saber q es nueva
+      const newRow = { pilotId: newId, firstName: '', lastName: '', flightHours: '', pilotLicenseId: '', isNewRow: true }; //con flag en true para saber q es nueva
       setTableData((prevData) => [...prevData, newRow]);
       setAlert({ type: 'info', message: 'New row added. Edit and click Save.' });
     };
@@ -95,7 +95,7 @@ const CrudPilots= () => {
       { field: 'flightHours', headerName: 'FL HOURS', width: 150, editable:true},
       { field: 'pilotLicenseId', headerName: 'LICENSE', width: 150, editable:true },
       { field: 'deleteButton', headerName: 'DELETE', width: 150, 
-        renderCell: (params) => (<DeleteIcon onClick={() => handleDelete(params.row.planeId)}>Delete</DeleteIcon>),
+        renderCell: (params) => (<DeleteIcon onClick={() => handleDelete(params.row.pilotId)}>Delete</DeleteIcon>),
       
       },
       {
