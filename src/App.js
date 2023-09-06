@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Container, Nav, NavItem } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CrudPilots from './Table/CrudPilots';
+import Home from './Table/Home';
+import Footer from './Table/Footer';
 
 function App() {
   return (
@@ -32,8 +34,10 @@ function App() {
         <Routes>
           <Route path="/data-grid" element={<DataGridTest />} />
           <Route path="/Pilots" element={<CrudPilots />} />
+          <Route path="/" element={<Home />} />
           {/* Add routes for other components */}
         </Routes>
+        <Footer />{Footer}
       </Container>
     </Router>
   );

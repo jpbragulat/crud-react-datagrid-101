@@ -41,7 +41,7 @@ const CrudPilots= () => {
 
     
 
-    //Add Row - no lo use
+    /*//Add Row - no lo use
     const handleAdd2 = async (plane) => {
         try {
           await axios.post('http://localhost:5233/api/AddPlane', plane)
@@ -54,6 +54,7 @@ const CrudPilots= () => {
         }
 
     }
+    */
     ///////////////////// HANDLE SAVE - mofif for Pilots ///////////////////////////
 
     const handleSave = async (row) => {
