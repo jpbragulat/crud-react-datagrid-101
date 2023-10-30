@@ -1,11 +1,12 @@
 import './App.css';
-import DataGridTest from './Table/DataGridTest';
+import CrudPlanes from './Table/CrudPlanes';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Container, Nav, NavItem } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CrudPilots from './Table/CrudPilots';
 import Home from './Table/Home';
 import Footer from './Table/Footer';
+import CrudReservations from './Table/CrudReservations';
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
             </Link>
           </NavItem>
           <NavItem>
-            <Link to="/data-grid" className="nav-link">
+            <Link to="/Planes" className="nav-link">
               Airplanes
             </Link>
           </NavItem>
@@ -28,12 +29,18 @@ function App() {
               Pilots
             </Link>
           </NavItem>
+          <NavItem>
+            <Link to="/Reservations" className="nav-link">
+              Reservations
+            </Link>
+          </NavItem>
           {/* Add more buttons for other components */}
         </Nav>
 
         <Routes>
-          <Route path="/data-grid" element={<DataGridTest />} />
+          <Route path="/Planes" element={<CrudPlanes />} />
           <Route path="/Pilots" element={<CrudPilots />} />
+          <Route path="/Reservations" element={<CrudReservations />} />
           <Route path="/" element={<Home />} />
           {/* Add routes for other components */}
         </Routes>

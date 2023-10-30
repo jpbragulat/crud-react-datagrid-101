@@ -13,7 +13,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 
 
 
-const DataGridTest= () => {
+const CrudPlanes= () => {
     const [tableData, setTableData] = useState([])
 
     useEffect(() => {
@@ -41,7 +41,8 @@ const DataGridTest= () => {
 
     
 
-    //Add Row - no lo use
+    
+        /*Add Row - no lo use
     const handleAdd2 = async (plane) => {
         try {
           await axios.post('http://localhost:5233/api/AddPlane', plane)
@@ -53,7 +54,9 @@ const DataGridTest= () => {
 
         }
 
-    }
+      }*/
+
+
     //handleSave
     const handleSave = async (row) => {
       try {
@@ -137,4 +140,4 @@ const DataGridTest= () => {
   )
 }
 
-export default DataGridTest
+export default CrudPlanes;
