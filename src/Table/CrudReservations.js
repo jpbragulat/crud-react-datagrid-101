@@ -1,12 +1,13 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { DataGrid } from '@mui/x-data-grid'
+import { DataGrid, unstable_gridHeaderFilteringStateSelector } from '@mui/x-data-grid'
 import axios from 'axios';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import { Select, MenuItem } from '@mui/material';
 
 //import MaterialTable from 'material-table';
 
@@ -21,14 +22,14 @@ const CrudReservations= () => {
           .then((data) => data.json())
           .then((data) => setTableData(data))
       }, [])
-       console.log(tableData)
+       //console.log(tableData)
 
     //Con esta func hacemos el delete de una row, tambien volvemos a traer la tabla(esto es de cabeza pero bue)
     const handleDelete = async (id) => {
      
           try { // no ser burro y usar siempre el try y catch en las funciones para error handling
-            await axios.delete(`http://localhost:5233/api/DeletePlane/${id}`); // va entre esas comillas sino no agarra id como parametro pasado
-            fetch('http://localhost:5233/api/GetAllPlanes')
+            await axios.delete(`http://localhost:5233/api/DeleteReservation/${id}`); // va entre esas comillas sino no agarra id como parametro pasado
+            fetch('http://localhost:5233/api/GetAllReservations')
             .then((data) => data.json())
             .then((data) => setTableData(data));
             setAlert({ type: 'success', message: 'Row deleted successfully.' });
@@ -37,25 +38,7 @@ const CrudReservations= () => {
             console.error('Error deleting item:', error);
           }
         }
-       
-
-    
-
-    
-        /*Add Row - no lo use
-    const handleAdd2 = async (plane) => {
-        try {
-          await axios.post('http://localhost:5233/api/AddPlane', plane)
-          // tengo q pasar el array con todos los datos q quiero agregar, va a salir de un form
-          
-
-        }
-        catch{
-
-        }
-
-      }*/
-
+      
 
     //handleSave
     const handleSave = async (row) => {
@@ -81,15 +64,110 @@ const CrudReservations= () => {
     const handleAdd = () => {
       //const newId = Math.max(...tableData.map((row) => row.plane_id)) + 1;
       const newId = 0;
-      const newRow = { ReservationId: newId, plane_id: '', PilotId: '', StartDateTime: '', FinishDateTime: '', TotalTime: '', isNewRow: true }; //con flag en true para saber q es nueva
+      const newRow = { reservationId: newId, plane_id: '', pilotId: '', startDateTime: '', finishDateTime: '', totalTime: '', isNewRow: true }; //con flag en true para saber q es nueva
       setTableData((prevData) => [...prevData, newRow]);
       setAlert({ type: 'info', message: 'New row added. Edit and click Save.' });
     };
 
+
+    //////////////    Seteando DataGrid Fields
+
+    //seteo una var como ejemplo con pilotos:
+   var pilots = [];
+   fetch("http://localhost:5233/api/GetAllPilots").then((data) => data.json())
+    .then((data) => {
+      pilots = data;
+      //console.log(pilots);
+    }); // nos tiro .map is not a function porq estabamos pifiando el tipo de var , era una string y necesitamos qs ea un array para eso usamos .then
+   
+
+
+    // FUNC TRAE ALL PLANES ASYNC
+    function fetchDataPlanes() {
+      try {
+        fetch("http://localhost:5233/api/GetAllPlanes")
+        .then((data) => data.json())
+        .then((data) => {
+          console.log("en el fetch:", data);
+          return data;
+        })
+        
+        
+        
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        throw error;
+      }
+    }
+    
+    var planes = fetchDataPlanes();
+    //const sleep = ms => new Promise(r => setTimeout(r, ms));
+    //async CreateVarPlanes() => { var planes = await fetchDataPlanes();}
+    //planes.then((planesData) => { console.log("hola", planesData);});
+    //planes.then((planesData) => { planes = planesData});
+    //console.log("TESTING:");
+    console.log("MostrarFuera:", planes);
+    
+    
+    // end
+
+
+     
+    // HANDLERS
+    
+    const handlePilotChange = (rowId, newPilotId) => {
+        console.log("pilotChange", rowId, newPilotId);
+     
+      //this.setState({selectValue: event.target.value}, ()=> {alert(`Value: ${this.state.selectValue}`)});
+      // Update the 'pilotId' in your state or data array with the newPilotId.
+      // You can use the rowId to identify the row to update.
+      // Make sure to update the state so that it reflects the new value.
+    };
+
+    const handlePlaneChange = (rowId, newPilotId) => {
+        console.log("planeChange", rowId, newPilotId);
+
+    };
+    // end
+
+
+    //HARDCODE ARRAY PLANES
+    const aviones = [
+      { id: 'avionId1', name: 'Plane 1' },
+      { id: 'avionId2', name: 'Plane 2' },
+      // Add more pilot options as needed
+    ];
+    
+    
     const columns = [
       { field: 'reservationId', headerName: 'RESERVATION ID', width: 150, hide:false }, // no le cabe las variables con la primera y mayus
-      { field: 'pilotId', headerName: 'PILOT ID', width: 150, editable:true },
-      { field: 'plane_id', headerName: 'PLANE ID', width: 150, editable:true},
+      { field: 'pilotId', headerName: 'PILOT ID', width: 200, editable:true,
+        renderCell: (params) => (
+          <Select
+            value = {params.row.pilotId}
+            onChange={(e) => handlePilotChange(params.row.id, e.target.value)}
+            defaultValue=""
+            >
+                 {pilots.map((pilot) => (<MenuItem key={pilot.pilotId} value={pilot.pilotId}> {pilot.firstName} </MenuItem>))}
+
+          </Select>
+        )
+      },
+      
+      { field: 'plane_id', headerName: 'PLANE ID', width: 150, editable:true,
+        //renderCell: (params) => (
+          //<Select
+            //value = {params.row.plane_id}
+            //onChange = {(e) => handlePlaneChange(params.row.id, e.target.value)}
+            //>
+             // {planes.map((plane) => (<MenuItem key={plane.plane_id} value={plane.plane_id}> {plane.identifier} </MenuItem>))}
+            
+          
+          //</Select>
+
+        //)
+      
+      },
       { field: 'startDateTime', headerName: 'RESERVATION START', width: 150, editable:true},
       { field: 'finishDateTime', headerName: 'RESERVATION FINISH', width: 150, editable:true },
       { field: 'totalTimeReservation', headerName: 'TOTAL RESERVATION TIME', width: 150, editable:false },
